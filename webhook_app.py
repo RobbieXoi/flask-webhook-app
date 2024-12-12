@@ -24,9 +24,8 @@ class WebhookLog(db.Model):
     payload = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-# Tạo bảng trong database
-@app.before_first_request
-def create_tables():
+# Khởi tạo database khi ứng dụng chạy
+with app.app_context():
     db.create_all()
 
 # Webhook endpoint
