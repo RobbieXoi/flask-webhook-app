@@ -3,94 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        .stats {
-            margin-bottom: 20px;
-        }
-        .stats div {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Dashboard</title>
 </head>
 <body>
-    <h1>Email Dashboard</h1>
-
-    <div class="stats">
-        <h2>Statistics</h2>
-        <div><strong>Total Sent:</strong> {{ stats.total_sent }}</div>
-        <div><strong>Total Opens:</strong> {{ stats.total_opens }}</div>
-        <div><strong>Total Clicks:</strong> {{ stats.total_clicks }}</div>
-        <div><strong>Bounce Rate:</strong> {{ stats.bounce_rate }}%</div>
-        <div><strong>Pending:</strong> {{ stats.pending }}</div>
-    </div>
-
-    <h2>Emails</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Subject</th>
-                <th>Status</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for email in emails %}
-            <tr>
-                <td>{{ email.id }}</td>
-                <td>{{ email.email }}</td>
-                <td>{{ email.subject }}</td>
-                <td>{{ email.status }}</td>
-                <td>{{ email.timestamp }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Webhook Logs</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Event Type</th>
-                <th>Payload</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in webhook_logs %}
-            <tr>
-                <td>{{ log.id }}</td>
-                <td>{{ log.event_type }}</td>
-                <td>{{ log.payload }}</td>
-                <td>{{ log.timestamp }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <h1>Webhook Dashboard</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Status</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.status }}</td>
+        </tr>
+        {% endfor %}
     </table>
 </body>
 </html>
