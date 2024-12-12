@@ -4,22 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
 </head>
 <body>
-    <h1>Webhook Dashboard</h1>
-    <table border="1">
+    <h1>Email Dashboard</h1>
+
+    <!-- Mục 1: Theo dõi trạng thái email -->
+    <h2>Trạng thái email</h2>
+    <table>
         <tr>
             <th>ID</th>
             <th>Email</th>
-            <th>Status</th>
+            <th>Tiêu đề</th>
+            <th>Trạng thái</th>
+            <th>Thời gian</th>
         </tr>
-        {% for row in rows %}
+        {% for email in emails %}
         <tr>
-            <td>{{ row.id }}</td>
-            <td>{{ row.email }}</td>
-            <td>{{ row.status }}</td>
+            <td>{{ email.id }}</td>
+            <td>{{ email.email }}</td>
+            <td>{{ email.subject }}</td>
+            <td>{{ email.status }}</td>
+            <td>{{ email.timestamp }}</td>
         </tr>
         {% endfor %}
     </table>
+
+    <!-- Mục 2: Nhật ký hoạt động webhook -->
+    <h2>Nhật ký webhook</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Loại sự kiện</th>
+            <th>Payload</th>
+            <th>Thời gian</th>
+        </tr>
+        {% for log in webhook_logs %}
+        <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.event_type }}</td>
+            <td>{{ log.payload }}</td>
+            <td>{{ log.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Mục 3: Thống kê -->
+    <h2>Thống kê</h2>
+    <ul>
+        <li>Tổng email đã gửi: {{ stats.total_sent }}</li>
+        <li>Tổng email đã mở: {{ stats.total_opens }}</li>
+        <li>Tổng email đã nhấp: {{ stats.total_clicks }}</li>
+        <li>Tỷ lệ lỗi: {{ stats.bounce_rate }}%</li>
+        <li>Email đang chờ xử lý: {{ stats.pending }}</li>
+    </ul>
 </body>
 </html>
