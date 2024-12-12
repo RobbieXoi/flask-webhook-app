@@ -32,30 +32,40 @@ with app.app_context():
 # Webhook endpoint
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    data = request.json
-    if isinstance(data, dict):  # Kiểm tra dữ liệu có đúng định dạng JSON object
-        event_type = data.get('event')
-        email = data.get('email')
-        subject = data.get('subject', 'N/A')
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON payload provided"}), 400
 
-        # Lưu webhook log
-        webhook_log = WebhookLog(event_type=event_type, payload=str(data))
-        db.session.add(webhook_log)
+        if isinstance(data, dict):  # Kiểm tra dữ liệu có đúng định dạng JSON object
+            event_type = data.get('event')
+            email = data.get('email')
+            subject = data.get('subject', 'N/A')
 
-        # Cập nhật trạng thái email
-        email_record = Email.query.filter_by(email=email).first()
-        if email_record:
-            email_record.status = event_type
-            email_record.timestamp = datetime.datetime.utcnow()
+            if not event_type or not email:
+                return jsonify({"error": "Missing required fields (event, email)"}), 400
+
+            # Lưu webhook log
+            webhook_log = WebhookLog(event_type=event_type, payload=str(data))
+            db.session.add(webhook_log)
+
+            # Cập nhật trạng thái email
+            email_record = Email.query.filter_by(email=email).first()
+            if email_record:
+                email_record.status = event_type
+                email_record.timestamp = datetime.datetime.utcnow()
+            else:
+                # Thêm mới nếu không tìm thấy
+                email_record = Email(email=email, subject=subject, status=event_type)
+                db.session.add(email_record)
+
+            db.session.commit()
+            return jsonify({"message": "Webhook processed"}), 200
         else:
-            # Thêm mới nếu không tìm thấy
-            email_record = Email(email=email, subject=subject, status=event_type)
-            db.session.add(email_record)
-
-        db.session.commit()
-        return jsonify({"message": "Webhook processed"}), 200
-    else:
-        return jsonify({"error": "Invalid data format"}), 400
+            return jsonify({"error": "Invalid data format"}), 400
+    except Exception as e:
+        print(f"Error processing webhook: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 # Dashboard endpoint
 @app.route('/')
