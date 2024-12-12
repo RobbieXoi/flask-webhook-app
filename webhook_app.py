@@ -17,6 +17,8 @@ class EmailStatus(db.Model):
     email = db.Column(db.String(120), nullable=False)
     status = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(db.DateTime, default=db.func.now())
+    event_type = db.Column(db.String(50))  # Loại sự kiện
+    campaign = db.Column(db.String(100))  # Chiến dịch
 
 # Create database tables (if they don't already exist)
 with app.app_context():
@@ -24,9 +26,31 @@ with app.app_context():
 
 @app.route('/')
 def dashboard():
-    """Dashboard route to display email statuses."""
+    """Dashboard route to display email statuses and statistics."""
     rows = EmailStatus.query.all()
-    return render_template('dashboard.html', rows=rows)
+
+    # Thống kê tổng quan
+    total_emails = EmailStatus.query.count()
+    sent_count = EmailStatus.query.filter_by(status='Sent').count()
+    opened_count = EmailStatus.query.filter_by(status='Opened').count()
+    failed_count = EmailStatus.query.filter_by(status='Failed').count()
+    click_count = EmailStatus.query.filter_by(status='Clicked').count()
+
+    open_rate = (opened_count / total_emails) * 100 if total_emails > 0 else 0
+    error_rate = (failed_count / total_emails) * 100 if total_emails > 0 else 0
+    click_rate = (click_count / total_emails) * 100 if total_emails > 0 else 0
+
+    stats = {
+        'total_emails': total_emails,
+        'sent_count': sent_count,
+        'opened_count': opened_count,
+        'failed_count': failed_count,
+        'click_count': click_count,
+        'open_rate': open_rate,
+        'error_rate': error_rate,
+        'click_rate': click_rate,
+    }
+    return render_template('dashboard.html', rows=rows, stats=stats)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -37,14 +61,24 @@ def webhook():
             for entry in data:
                 email = entry.get('email')
                 status = entry.get('event')
+                event_type = entry.get('type')  # Loại sự kiện
+                campaign = entry.get('campaign')  # Chiến dịch
                 if email and status:
-                    db.session.add(EmailStatus(email=email, status=status))
+                    db.session.add(EmailStatus(
+                        email=email, status=status,
+                        event_type=event_type, campaign=campaign
+                    ))
             db.session.commit()
         else:
             email = data.get('email')
             status = data.get('event')
+            event_type = data.get('type')  # Loại sự kiện
+            campaign = data.get('campaign')  # Chiến dịch
             if email and status:
-                db.session.add(EmailStatus(email=email, status=status))
+                db.session.add(EmailStatus(
+                    email=email, status=status,
+                    event_type=event_type, campaign=campaign
+                ))
                 db.session.commit()
         return jsonify({"message": "Data received and processed."}), 200
     except Exception as e:
