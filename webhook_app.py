@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String, Text, DateTime
 import datetime
 
 app = Flask(__name__)
@@ -11,18 +12,18 @@ db = SQLAlchemy(app)
 
 # Model Email
 class Email(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), nullable=False)
-    subject = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(50), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    id = Column(Integer, primary_key=True)
+    email = Column(String(120), nullable=False)
+    subject = Column(String(255), nullable=False)
+    status = Column(String(50), nullable=False)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
 
 # Model Webhook Logs
 class WebhookLog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    event_type = db.Column(db.String(100), nullable=False)
-    payload = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    id = Column(Integer, primary_key=True)
+    event_type = Column(String(100), nullable=False)
+    payload = Column(Text, nullable=False)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
 
 # Khởi tạo database khi ứng dụng chạy
 with app.app_context():
