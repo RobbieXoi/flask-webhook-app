@@ -3,21 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Webhook Dashboard</title>
 </head>
 <body>
     <h1>Webhook Dashboard</h1>
+
+    <!-- Khu vực thống kê -->
+    <div>
+        <h2>Thống kê tổng quan</h2>
+        <p><strong>Tổng số email:</strong> {{ stats.total_emails }}</p>
+        <p><strong>Đã gửi:</strong> {{ stats.sent_count }}</p>
+        <p><strong>Đã mở:</strong> {{ stats.opened_count }}</p>
+        <p><strong>Lỗi:</strong> {{ stats.failed_count }}</p>
+        <p><strong>Nhấp chuột:</strong> {{ stats.click_count }}</p>
+        <p><strong>Tỷ lệ mở:</strong> {{ stats.open_rate }}%</p>
+        <p><strong>Tỷ lệ lỗi:</strong> {{ stats.error_rate }}%</p>
+        <p><strong>Tỷ lệ nhấp chuột:</strong> {{ stats.click_rate }}%</p>
+    </div>
+
+    <!-- Khu vực bảng dữ liệu -->
     <table border="1">
         <tr>
             <th>ID</th>
             <th>Email</th>
             <th>Status</th>
+            <th>Timestamp</th>
+            <th>Campaign</th>
         </tr>
         {% for row in rows %}
         <tr>
             <td>{{ row.id }}</td>
             <td>{{ row.email }}</td>
             <td>{{ row.status }}</td>
+            <td>{{ row.timestamp }}</td>
+            <td>{{ row.campaign }}</td>
         </tr>
         {% endfor %}
     </table>
