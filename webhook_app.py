@@ -67,6 +67,7 @@ def webhook():
         print(f"Error processing webhook: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+
 # Dashboard endpoint
 @app.route('/')
 def dashboard():
