@@ -2,18 +2,16 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "Webhook is running!"  # Trả về thông báo khi truy cập URL gốc
-
-@app.route("/webhook", methods=["POST"])
+@app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    if request.method == "POST":
-        data = request.json  # Lấy dữ liệu JSON từ request
-        # Xử lý dữ liệu webhook
-        print(f"Received webhook data: {data}")
-        return jsonify({"status": "success", "message": "Webhook received"}), 200
-    return jsonify({"status": "failure", "message": "Invalid method"}), 400
+    if request.method == 'POST':
+        # Handle POST request (SendGrid gửi webhook)
+        data = request.json
+        # Thực hiện xử lý dữ liệu
+        return jsonify({'status': 'success', 'message': 'Webhook received'}), 200
+    elif request.method == 'GET':
+        # Handle GET request (kiểm tra hoặc debug)
+        return jsonify({'status': 'running', 'message': 'Webhook is ready'}), 200
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
