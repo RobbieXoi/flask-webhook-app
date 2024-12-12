@@ -3,24 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Email Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .stats {
+            margin-bottom: 20px;
+        }
+        .stats div {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Email Dashboard</h1>
 
-    <h2>Statistics</h2>
-    <ul>
-        <li>Total Sent: {{ stats.total_sent }}</li>
-        <li>Total Opens: {{ stats.total_opens }}</li>
-        <li>Total Clicks: {{ stats.total_clicks }}</li>
-        <li>Bounce Rate: {{ stats.bounce_rate }}%</li>
-        <li>Pending: {{ stats.pending }}</li>
-    </ul>
+    <div class="stats">
+        <h2>Statistics</h2>
+        <div><strong>Total Sent:</strong> {{ stats.total_sent }}</div>
+        <div><strong>Total Opens:</strong> {{ stats.total_opens }}</div>
+        <div><strong>Total Clicks:</strong> {{ stats.total_clicks }}</div>
+        <div><strong>Bounce Rate:</strong> {{ stats.bounce_rate }}%</div>
+        <div><strong>Pending:</strong> {{ stats.pending }}</div>
+    </div>
 
-    <h2>Recent Emails</h2>
-    <table border="1">
+    <h2>Emails</h2>
+    <table>
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Email</th>
                 <th>Subject</th>
                 <th>Status</th>
@@ -30,6 +61,7 @@
         <tbody>
             {% for email in emails %}
             <tr>
+                <td>{{ email.id }}</td>
                 <td>{{ email.email }}</td>
                 <td>{{ email.subject }}</td>
                 <td>{{ email.status }}</td>
@@ -40,9 +72,10 @@
     </table>
 
     <h2>Webhook Logs</h2>
-    <table border="1">
+    <table>
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Event Type</th>
                 <th>Payload</th>
                 <th>Timestamp</th>
@@ -51,6 +84,7 @@
         <tbody>
             {% for log in webhook_logs %}
             <tr>
+                <td>{{ log.id }}</td>
                 <td>{{ log.event_type }}</td>
                 <td>{{ log.payload }}</td>
                 <td>{{ log.timestamp }}</td>
